@@ -2,6 +2,7 @@
 #include <stdexcept>
 
 // Конструкторы
+<<<<<<< HEAD
 Complex::Complex() : re_(0), im_(0), type_(COMPLEX) {}
 Complex::Complex(double re, double im) : re_(re), im_(im), type_(COMPLEX) {}
 Complex::Complex(const Complex& other)
@@ -10,6 +11,11 @@ Complex::Complex(const Complex& other)
 NumberType Complex::getType() const {
     return type_;
 }
+=======
+Complex::Complex() : re_(0), im_(0) {}
+Complex::Complex(double re, double im) : re_(re), im_(im) {}
+Complex::Complex(const Complex& other) : re_(other.re_), im_(other.im_) {}
+>>>>>>> 19e82b9671605cf18ce56235b6900b9ccb318e45
 
 // Гетеры и сетеры
 double Complex::getReal() const { return re_; }
