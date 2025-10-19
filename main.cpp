@@ -1,0 +1,106 @@
+#include "Quaternion.h"
+#include "Complex.h"
+#include <iostream>
+using namespace std;
+
+// Вспомогательная функция для печати типа числа
+string typeToString(NumberType t) {
+    switch(t) {
+        case COMPLEX: return "Complex";
+        case QUATERNION: return "Quaternion";
+        default: return "Unknown";
+    }
+}
+
+int main() {
+    NumberType typeChoice;
+    cout << "Выберите тип числа:\n1 - Complex\n2 - Quaternion\nВведите цифру: ";
+    int choice;
+    cin >> choice;
+    if (choice == 1)
+        typeChoice = COMPLEX;
+    else
+        typeChoice = QUATERNION;
+
+    Complex c1, c2;
+    Quaternion q1, q2;
+    char op;
+
+    if (typeChoice == COMPLEX) {
+        double a, b;
+        cout << "Введите комплексное число 1 (a b): ";
+        cin >> a >> b;
+        c1 = Complex(a, b);
+
+        cout << "Введите комплексное число 2 (a b): ";
+        cin >> a >> b;
+        c2 = Complex(a, b);
+    } else {
+        double a, b, c, d;
+        cout << "Введите кватернион 1 (a b c d): ";
+        cin >> a >> b >> c >> d;
+        q1 = Quaternion(a, b, c, d);
+
+        cout << "Введите кватернион 2 (a b c d): ";
+        cin >> a >> b >> c >> d;
+        q2 = Quaternion(a, b, c, d);
+    }
+
+    cout << "\nВыберите операцию:\n"
+         << " +  — сложение\n"
+         << " -  — вычитание\n"
+         << " *  — умножение\n"
+         << " =  — проверка равенства\n"
+         << " n  — норма первого числа\n"
+         << " m  — норма второго числа\n"
+         << " t  — показать тип переменной\n"
+         << " q  — выход\n"
+         << "Введите символ: ";
+
+    while (cin >> op) {
+        if (op == 'q' || op == 'Q') break;
+
+        if (typeChoice == COMPLEX) {
+            Complex result;
+            switch(op) {
+                case '+': result = c1 + c2; cout << "Результат: " << result << endl; break;
+                case '-': result = c1 - c2; cout << "Результат: " << result << endl; break;
+                case '*': result = c1 * c2; cout << "Результат: " << result << endl; break;
+                case '=': cout << ((c1 == c2) ? "Равны" : "Не равны") << endl; break;
+                case 'n':
+                case 'N': cout << "Норма c1 = " << c1.norm2() << endl; break;
+                case 'm':
+                case 'M': cout << "Норма c2 = " << c2.norm2() << endl; break;
+                case 't':
+                case 'T': 
+                    cout << "Тип c1: " << typeToString(c1.getType()) << endl;
+                    cout << "Тип c2: " << typeToString(c2.getType()) << endl;
+                    break;
+                default: cout << "Неизвестная операция" << endl;
+            }
+        } else {
+            Quaternion result;
+            switch(op) {
+                case '+': result = q1 + q2; cout << "Результат: " << result << endl; break;
+                case '-': result = q1 - q2; cout << "Результат: " << result << endl; break;
+                case '*': result = q1 * q2; cout << "Результат: " << result << endl; break;
+                case '=': cout << ((q1 == q2) ? "Равны" : "Не равны") << endl; break;
+                case 'n':
+                case 'N': cout << "Норма q1 = " << q1.norm2() << endl; break;
+                case 'm':
+                case 'M': cout << "Норма q2 = " << q2.norm2() << endl; break;
+                case 't':
+                case 'T': 
+                    cout << "Тип q1: " << typeToString(q1.getType()) << endl;
+                    cout << "Тип q2: " << typeToString(q2.getType()) << endl;
+                    break;
+                default: cout << "Неизвестная операция" << endl;
+            }
+        }
+
+        cout << "\nВведите следующую операцию (+, -, *, =, n, m, t, q): ";
+    }
+
+    cout << "\nРабота завершена.\n";
+    return 0;
+}
