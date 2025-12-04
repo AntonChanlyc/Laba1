@@ -1,11 +1,10 @@
 #pragma once
 #include "Number.h"
-//dfd
+
 class Complex : public Number {
 protected:
     double re_;
     double im_;
-
 public:
     Complex();
     Complex(double re, double im);
@@ -14,7 +13,6 @@ public:
     double getReal() const;
     double getImag() const;
 
-    // Реализация виртуальных методов
     NumberType getType() const override { return COMPLEX; }
     Number* clone() const override { return new Complex(*this); }
 

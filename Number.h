@@ -11,10 +11,8 @@ public:
     virtual ~Number() = default;
 
     virtual NumberType getType() const = 0;
-
     virtual Number* clone() const = 0;
 
-    // јрифметические операции Ч виртуальные
     virtual Number* add(const Number& other) const = 0;
     virtual Number* sub(const Number& other) const = 0;
     virtual Number* mul(const Number& other) const = 0;
