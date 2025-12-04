@@ -1,25 +1,10 @@
 #pragma once
-#include <iostream>
-<<<<<<< HEAD
-#include <cmath>
-
-enum NumberType {
-    COMPLEX,
-    QUATERNION
-};
-
-class Complex {
+#include "Number.h"
+//dfd
+class Complex : public Number {
 protected:
-    double re_; // действ
-    double im_; // мним 
-    NumberType type_;
-=======
-
-class Complex {
-private:
-    double re_; // действ
-    double im_; // мним 
->>>>>>> 19e82b9671605cf18ce56235b6900b9ccb318e45
+    double re_;
+    double im_;
 
 public:
     Complex();
@@ -28,30 +13,15 @@ public:
 
     double getReal() const;
     double getImag() const;
-    void setReal(double re);
-    void setImag(double im);
-<<<<<<< HEAD
-    NumberType getType() const;
-=======
->>>>>>> 19e82b9671605cf18ce56235b6900b9ccb318e45
 
-    Complex conj() const;
-    double norm2() const;
+    // Реализация виртуальных методов
+    NumberType getType() const override { return COMPLEX; }
+    Number* clone() const override { return new Complex(*this); }
 
-    Complex operator+(const Complex& other) const;
-    Complex operator-(const Complex& other) const;
-    Complex operator*(const Complex& other) const;
-    Complex operator/(const Complex& other) const;
+    Number* add(const Number& other) const override;
+    Number* sub(const Number& other) const override;
+    Number* mul(const Number& other) const override;
+    Number* div(const Number& other) const override;
 
-    bool operator==(const Complex& other) const;
-
-    friend std::ostream& operator<<(std::ostream& os, const Complex& c);
-<<<<<<< HEAD
-
-
-
-
-    
-=======
->>>>>>> 19e82b9671605cf18ce56235b6900b9ccb318e45
+    void print(std::ostream& os) const override;
 };

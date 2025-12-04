@@ -1,31 +1,27 @@
 #pragma once
-#include "Complex.h"
+#include "Number.h"
 
-class Quaternion : public Complex {
-protected:
-    double j_;
-    double k_;
+class Quaternion : public Number {
+private:
+    double w, x, y, z;
 
 public:
-    
     Quaternion();
-    Quaternion(double a, double b, double c, double d);
-    Quaternion(const Quaternion& other);
+    Quaternion(double w, double x, double y, double z);
+    Quaternion(const Quaternion& q);
 
-    
-    double getj() const;
-    double getk() const;
-    void setJ(double j);
-    void setK(double k);
+    double getW() const;
+    double getX() const;
+    double getY() const;
+    double getZ() const;
 
-    
-    Quaternion operator+(const Quaternion& other) const;
-    Quaternion operator-(const Quaternion& other) const;
-    Quaternion operator*(const Quaternion& other) const;
-    bool operator==(const Quaternion& other) const;
+    NumberType getType() const override { return QUATERNION; }
+    Number* clone() const override { return new Quaternion(*this); }
 
-    double norm2() const;
+    Number* add(const Number& other) const override;
+    Number* sub(const Number& other) const override;
+    Number* mul(const Number& other) const override;
+    Number* div(const Number& other) const override;
 
-    
-    friend std::ostream& operator<<(std::ostream& os, const Quaternion& q);
+    void print(std::ostream& os) const override;
 };

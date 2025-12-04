@@ -1,61 +1,89 @@
 #include "Quaternion.h"
+#include <stdexcept>
 #include <cmath>
 
+Quaternion::Quaternion() : w(0), x(0), y(0), z(0) {}
+Quaternion::Quaternion(double w, double x, double y, double z)
+    : w(w), x(x), y(y), z(z) {}
+Quaternion::Quaternion(const Quaternion& q)
+    : w(q.w), x(q.x), y(q.y), z(q.z) {}
 
-Quaternion::Quaternion() : Complex(0, 0), j_(0), k_(0) {type_ = QUATERNION;}
-Quaternion::Quaternion(double a, double b, double c, double d)
-    : Complex(a, b), j_(c), k_(d) { type_ = QUATERNION; }
-Quaternion::Quaternion(const Quaternion& other)
-    : Complex(other.re_, other.im_), j_(other.j_), k_(other.k_) {type_ = QUATERNION;}
+double Quaternion::getW() const { return w; }
+double Quaternion::getX() const { return x; }
+double Quaternion::getY() const { return y; }
+double Quaternion::getZ() const { return z; }
 
-// ÃÂÚÓ‰˚ 
-double Quaternion::getj() const { return j_; }
-double Quaternion::getk() const { return k_; }
-void Quaternion::setJ(double j) { j_ = j; }
-void Quaternion::setK(double k) { k_ = k; }
+// ---------- ¿–»‘Ã≈“» ¿ -------------
+Number* Quaternion::add(const Number& other) const {
+    if (other.getType() != QUATERNION)
+        throw std::runtime_error("Quaternion can operate only with Quaternion");
 
-// ÓÔÂ‡ÚÓ˚
-Quaternion Quaternion::operator+(const Quaternion& other) const {
-    return Quaternion(re_ + other.re_,
-                      im_ + other.im_,
-                      j_ + other.j_,
-                      k_ + other.k_);
-}
-Quaternion Quaternion::operator-(const Quaternion& other) const {
-    return Quaternion(re_ - other.re_,
-                      im_ - other.im_,
-                      j_ - other.j_,
-                      k_ - other.k_);
-}
-Quaternion Quaternion::operator*(const Quaternion& other) const {
-    double a1 = re_, b1 = im_, c1 = j_, d1 = k_;
-    double a2 = other.re_, b2 = other.im_, c2 = other.j_, d2 = other.k_;
-
-    return Quaternion(
-        a1*a2 - b1*b2 - c1*c2 - d1*d2,
-        a1*b2 + b1*a2 + c1*d2 - d1*c2,
-        a1*c2 - b1*d2 + c1*a2 + d1*b2,
-        a1*d2 + b1*c2 - c1*b2 + d1*a2
+    const Quaternion& q = dynamic_cast<const Quaternion&>(other);
+    return new Quaternion(
+        w + q.w, x + q.x, y + q.y, z + q.z
     );
 }
-bool Quaternion::operator==(const Quaternion& other) const {
-    return std::abs(re_ - other.re_) < 1e-9 &&
-           std::abs(im_ - other.im_) < 1e-9 &&
-           std::abs(j_ - other.j_) < 1e-9 &&
-           std::abs(k_ - other.k_) < 1e-9;
+
+Number* Quaternion::sub(const Number& other) const {
+    if (other.getType() != QUATERNION)
+        throw std::runtime_error("Quaternion can operate only with Quaternion");
+
+    const Quaternion& q = dynamic_cast<const Quaternion&>(other);
+    return new Quaternion(
+        w - q.w, x - q.x, y - q.y, z - q.z
+    );
 }
 
-double Quaternion::norm2() const {
-    return re_*re_ + im_*im_ + j_*j_ + k_*k_;
+Number* Quaternion::mul(const Number& other) const {
+    if (other.getType() != QUATERNION)
+        throw std::runtime_error("Quaternion can operate only with Quaternion");
+
+    const Quaternion& q = dynamic_cast<const Quaternion&>(other);
+
+    return new Quaternion(
+        w*q.w - x*q.x - y*q.y - z*q.z,
+        w*q.x + x*q.w + y*q.z - z*q.y,
+        w*q.y - x*q.z + y*q.w + z*q.x,
+        w*q.z + x*q.y - y*q.x + z*q.w
+    );
 }
 
-std::ostream& operator<<(std::ostream& os, const Quaternion& q) {
-    os << q.re_;
-    if (q.im_ >= 0) os << "+";
-    os << q.im_ << "i";
-    if (q.j_ >= 0) os << "+";
-    os << q.j_ << "j";
-    if (q.k_ >= 0) os << "+";
-    os << q.k_ << "k";
-    return os;
+Number* Quaternion::div(const Number& other) const {
+    if (other.getType() != QUATERNION)
+        throw std::runtime_error("Quaternion can operate only with Quaternion");
+
+    const Quaternion& q = dynamic_cast<const Quaternion&>(other);
+
+    double norm2 = q.w*q.w + q.x*q.x + q.y*q.y + q.z*q.z;
+    if (norm2 == 0) throw std::runtime_error("Division by zero quaternion!");
+
+    // conj(q)
+    Quaternion conj(q.w, -q.x, -q.y, -q.z);
+
+    // multiply this * conj(q)
+    Number* temp = this->mul(conj);
+
+    // temp is Number*, convert to Quaternion*
+    Quaternion* resQ = dynamic_cast<Quaternion*>(temp);
+    if (!resQ) {
+        delete temp;
+        throw std::runtime_error("Internal error: mul() returned wrong type");
+    }
+
+    // finish division
+    resQ->w /= norm2;
+    resQ->x /= norm2;
+    resQ->y /= norm2;
+    resQ->z /= norm2;
+
+    return resQ;  // already a Quaternion*
+}
+
+
+
+void Quaternion::print(std::ostream& os) const {
+    os << w << " + "
+       << x << "i + "
+       << y << "j + "
+       << z << "k";
 }
